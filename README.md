@@ -83,6 +83,42 @@ Devnet
   - Transfers excess vault balances above cached reserves to a recipient.
   - Creates recipient token ATAs if needed.
 
+## 🧮 CPMM Math Model
+
+The core pool mechanics can be summarized with three equations. Here, $x_0$ and $y_0$ are the current reserves, $dx$ and $dy$ are token amounts, $s$ is the LP share amount, $T$ is the total LP supply, and $f$ is the swap fee.
+
+### Swap
+
+For a swap from token X into token Y, the expected output is:
+
+$$
+dy = \frac{dx(1 - f)y_0}{x_0 + dx(1 - f)}
+$$
+
+The onchain implementation validates the equivalent fee-adjusted constant product invariant from observed vault balances.
+
+### Add Liquidity
+
+For an existing pool, newly minted LP shares are proportional to the smaller side of the deposit:
+
+$$
+s = \min\left(\frac{dx \cdot T}{x_0}, \frac{dy \cdot T}{y_0}\right)
+$$
+
+For initial liquidity, the program mints $\sqrt{dx \cdot dy} - \text{MINIMUM\_LIQUIDITY}$ shares to the depositor and permanently locks `MINIMUM_LIQUIDITY`.
+
+### Remove Liquidity
+
+Burned LP shares redeem the same fraction of both vault balances:
+
+$$
+dx = \frac{x_0 \cdot s}{T}
+\qquad
+dy = \frac{y_0 \cdot s}{T}
+$$
+
+All divisions are integer divisions in the onchain program, so results are rounded down.
+
 ## 🔐 Invariants
 
 The protocol is designed and tested against the following core invariants:
