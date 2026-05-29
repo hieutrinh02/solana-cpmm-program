@@ -105,7 +105,7 @@ $$
 s = \min\left(\frac{dx \cdot T}{x_0}, \frac{dy \cdot T}{y_0}\right)
 $$
 
-For initial liquidity, the program mints $\sqrt{dx \cdot dy} - \text{MINIMUM\_LIQUIDITY}$ shares to the depositor and permanently locks `MINIMUM_LIQUIDITY`.
+For initial liquidity, the program mints $\sqrt{dx \cdot dy} - L_{min}$ shares to the depositor and permanently locks $L_{min}$, where $L_{min}$ is the minimum locked liquidity.
 
 ### Remove Liquidity
 
